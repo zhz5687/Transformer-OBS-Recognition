@@ -246,7 +246,7 @@ class MyForm(QMainWindow, Ui_MainWindow):
                             nn.AdaptiveAvgPool2d((1, 1)),
                             nn.Flatten(), nn.Linear(2048, 1588))
 
-        checkpoint = torch.load('./checkpoints/checkpoint_ep0600.pth',  map_location=torch.device('cpu'))
+        checkpoint = torch.load('./checkpoint_ep0600.pth',  map_location=torch.device('cpu'))
         self.model.load_state_dict(checkpoint['state_dict'])
         self.model.eval()
 
