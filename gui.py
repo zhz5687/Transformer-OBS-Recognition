@@ -5,15 +5,15 @@ from PySide6.QtGui import *
 from PySide6.QtCore import *
 import sys
 import numpy as np
-from torch import true_divide
+#from torch import true_divide
 
 from src.ui.obs_gui import *
 import torch
 from torch import nn
 from torch.nn import functional as F
 from PIL import Image
-from skimage import transform, io, img_as_float
-from skimage.util import pad
+#from skimage import transform, io, img_as_float
+#from skimage.util import pad
 
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
