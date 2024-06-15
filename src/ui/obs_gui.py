@@ -108,7 +108,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(
             QCoreApplication.translate(
-                "MainWindow", u"Oracle Bone Script Recognition (v0.9)", None))
+                "MainWindow", u"Oracle Bone Script Recognition (甲骨文识别系统)", None))
         self.groupBox_draw.setTitle(
             QCoreApplication.translate("MainWindow", u"Input Drawing", None))
         self.groupBox_ctrl.setTitle(

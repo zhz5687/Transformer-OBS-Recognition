@@ -5,221 +5,66 @@
 
 ## 1. Project Background
 
-A short description of the project. This Repository will demonstrate using Pytorch to build deep convolutional neural networks and use Qt to create the GUI with the pre-trained model like the figure below.
+We referenced two projects: one [(Deep-Learning-for-Oracle-Bone-Script-Recognition)](https://github.com/cuicaihao/Deep-Learning-for-Oracle-Bone-Script-Recognition/tree/master) used Qt to create the GUI but the model is not very accuracte, while the other one [(HUST-OBC)](https://github.com/Pengjie-W/HUST-OBC/tree/main?tab=readme-ov-file#validation) used ResNet50 and has a high reconition rate. We promoted the interface of the first one, and optimized and amended the second one to use the Validation part. As a result, we got an intelligent and  accurate model. Once we write an OBC (oracle bones character), it shows us what's the Chinese the OBC represents. (As the picture shows)
+![APP SAMPLE IMAGE](figures/zhengchang.png)
+Besides, out model is very sensitive that even we write abstractly, which makes it hard to be identified, it can still show us the answer.   
+![APP SAMPLE IMAGE](figures/chou.png)
 
-![APP SAMPLE IMAGE](reports/figures/OBS_APP_SAMPLE.jpg)
-
-## 2. Basic Requirments
-
-I used [cookiecutter](https://drivendata.github.io/cookiecutter-data-science/) package to generate a skeleton of the project.
-
-There are some opinions implicit in the project structure that have grown out of our experience with what works and what doesn't when collaborating on data science projects. Some of the opinions are about workflows, and some of the opinions are about tools that make life easier.
-
-- Data is immutable
-- Notebooks are for exploration and communication (not for production)
-- Analysis is a DAG (I used the 'Makefile' workflow)
-- Build from the environment up
-
-### Starting Requirements
+## 2. Starting Requirements
 
 - conda 4.12.0
 - Python 3.7, 3.8
-I would suggest using [Anaconda](https://www.anaconda.com/) for the installation of Python. Or you can just install the [miniconda](https://docs.conda.io/en/latest/miniconda.html) package which save a lot of space on your hard drive.
+- We suggest using [Anaconda](https://www.anaconda.com/) for the installation of Python. Or you can just install the [miniconda](https://docs.conda.io/en/latest/miniconda.html) package which save a lot of space on your hard drive.
 
 ## 3. Tutorial Step by Step
 
-### Step 1: Init the project
+### Step 1: Download the project
 
-Use 'git' command to clone the project from the Github.
+Download the project using git clone command.
 
 ```bash
 cd PROJECT_DIR
-git clone https://github.com/cuicaihao/deep-learning-for-oracle-bone-script-recognition 
-# or
-# gh repo clone cuicaihao/deep-learning-for-oracle-bone-script-recognition
+git clone 
+https://github.com/zhz5687/Transformer-OBS-Recognition
 ```
+There's another part of the program that't too big to put here, you can download [here](https://pan.baidu.com/s/1XlUjOg7S51yKuPkrKkOpKw?pwd=1234).
 
-Check the project structure.
+### Step 2: Create Environment 
 
+We prepared the environment required for you. You can downoad it [here]( https://pan.baidu.com/s/1N2FAqHrLoz_Ol8q7ZtkGkQ?pwd=1234)
+and import it to Anaconda.
+When you run the program, you need to run it in this environment.
 ```bash
-cd deep-learning-for-oracle-bone-script-recognition
-ls -l
-# or 
-# tree -h
+conda activate Transformer
 ```
 
-You will see an similar structure as the one shown in the end.  Meanwhile you could open the 'Makefile' to see the raw commands of the workflow.
+### Step 3: Download the Dataset
 
-- [Makefile](Makefile)
+We use the [HUST](https://arxiv.org/html/2401.15365v1) dataset, which can be download [here](https://figshare.com/articles/dataset/HUST-OBS/25040543). After downloading it, move to the project file you download from github.
 
-### Step 2: Create the Python Environment and Install the Dependencies
 
-The default setting is to create virtual environment with Python 3.8.
+### Step 4: Train or Test your OBS model
+You can use [train.py](train.py) for fine-tuning or retraining. Once the model is downloaded, you can use [test.py](test.py) to validate the test set with an accuracy of 94.3%. [log.csv](log.csv) records the changes in training set accuracy and test set accuracy for each epoch. 
+[Validation_label.json](Validation_label.json) stores the relationship between classification IDs and dataset category IDs.
 
-```bash
-make create_environment
-```
+### Step 5: Try to run the program
 
-Then, we activate the virtual environment.
-
-```bash
-conda activate oracle-bone-script-recognition
-```
-
-Then, we install the dependencies.
-
-```bash
-make requirements
-```
-
-The details of the dependencies are listed in the 'requirements.txt' file.
-
-- [requirements.txt](requirements.txt)
-
-### Step 3: Download the Raw Data and Preprocess the Data
-
-Now thanks to the [甲骨文](https://github.com/Chinese-Traditional-Culture/JiaGuWen),
-
-![OBS_WEB](reports/figures/OBS_WEB.jpg)
-
-we can download the raw data of the images and database of oracle bone script.
-Then we will download the raw data and preprocess the data in the project `data/raw` directory.
-
-```bash
-make download_data
-```
-
-The basic step is to download repo, unzip the repo, and then make cp of the images and database (JSON) file to the project `data/raw` directory.
-
-Then, we preprocess the data, to create a table (csv file) for model development.
-
-```bash
-make create_dataset
-```
-
-The source code is located at `src/data/make_dataset.py`. The `make` command will provide the input arguments to this script to  create two tables (csv file) in the project `data/processed` directory.
-
-- [src/data/make_dataset.py](src/data/make_dataset.py)
-- [processed/image_name_label.csv](data/processed/image_name_label.csv)
-- [processed/label_name.csv](data/processed/label_name.csv)
-
-### Step 4: Build the Model with Pytorch  
-
-This section is about the model development.
-
-#### 4.1 Review Image and DataLoader
-
-Before we build the model, we need to review the image and data loader.
-
-```bash
-make image_review
-```
-
-This step will generate a series of images of the oracle bone script image sample to highlight the features of the images, such as color, height, width. Besides, we show the results of different binarization methods of the original greyscale image with the tool provided by the `scikit-image` package.
-
-The source code is located at `src/visualization/visualize.py`.
-
-- [src/visualization/visualize.py](src/visualization/visualize.py)
-
-![OBS_TH](reports/figures/OBS_TH.png)
-
-- [How to apply a threshold?](https://scikit-image.org/docs/stable/auto_examples/applications/plot_thresholding.html)
-- [https://scikit-image.org/](https://scikit-image.org/)
-
-#### 4.2 Test the DataLoader
-
-We can still test the Dataloader with the command.
-
-```bash
-make test_dataloader
-```
-
-This will generate an 8x8 grid-image of the oracle bone script image sample. The source code is located at `src/data/make_dataloader.py`.
-
-- [src/data/make_dataloader.py](src/data/make_dataloader.py)
-
-In the image below, it generates a batch of 64 images with its label(Chinese characters) on the top-left corner.
-
-![reports/figures/OBS_8x8_Batch.png](reports/figures/OBS_8x8_Batch.png)
-
-#### 4.3 Build the Deep Convolutional Neural Networks Model
-
-Now we can build the model.
-The souce code is loacted at `src/models/train_model.py`.
-This command will generate the model and the training process records at `models/`.
-
-```bash
-make train_model
-```
-
-**(Optional)** One can monitor the process by using the `tensorboard` command.
-
-```bash
-# Open another terminal
-tensorboard --logdir=models/runs
-```
-
-Then open the link: <http://localhost:6006/> to monitor the training and validation losses, see the training batch images, and see the model graph.
-
-![OBS_Tensorboard](reports/figures/OBS_TFB.jpg)
-
-- [src/models/train_model.py](src/models/train_model.py)
-
-After the training process, there is one model file named `model_best` in the `models/` directory.
-
-#### 4.4 Test the Model with Sample Image
-
-The pretrained model is located at `models/model_best`. We can test the model with the sample image. I used the  image (3653610.jpg) of the oracle bone script dataset in the `Makefile` `test_model` scripts, readers can change it to other images.
-
-```bash
-make test_model
-# ...
-# Chinese Character Label = 安
-#      label name  count       prob
-# 151    151    安      3 1.00000000
-# 306    306    富      2 0.01444918
-# 357    357    因      2 0.00002721
-# 380    380    家      2 0.00001558
-# 43      43    宜      5 0.00001120
-# 586    586    会      1 0.00000136
-# 311    311    膏      2 0.00000134
-# 5        5    执      9 0.00000031
-# 354    354    鲧      2 0.00000026
-# 706    706    室      1 0.00000011
-```
-
-The command will generate a sample figure with a predicted label on the top, and a table with the top 10 predicted labels sorted by the probability.
-
-![OBS_PREDICTION](reports/figures/OBS_PREDICTION.png)
-
-### Step 5: Test the Model with Qt-GUI
-
-Now we have the model, we can test the model with the Qt-GUI. I used the [Qt Designer](https://build-system.fman.io/qt-designer-download) to create the UI file at `src/ui/obs_gui.ui`. Then, use the `pyside6-uic` command to get the Python code from the UI file `pyside6-uic src/ui/obs_gui.ui -o src/ui/obs_gui.py.
-
-Activate the GUI by
-
+Now you can try to run the program using command.
 ```bash
 python gui.py
-# or 
-# make test_gui
 ```
 
-![OBS_GUI_DEMO](reports/figures/OBS_GUI_DEMO.jpg)
+## 4 Introduction of the interface
 
-The GUI contains an input drawing window for user to scratch the oracle bone script as an image.  
-After the user finishes the drawing and clicks the RUN button. The input image is converted to a tensor (np.array) and fed into the model. The model will predict the label of the input image with probability which is shown on the top  `Control Panel` of the GUI.
+![APP SAMPLE IMAGE](figures/4.png)
 
-- Text Label 1: Show the Chinese character label of the input image ID and the Prediction Probability. If the Acc > 0.5, the label background color is green, if the Acc < 0.0001 the label background color is red, otherwise the label background color is yellow.
+Once you load this interface, you can just write the OBC that you want to identify on the "输入" part, and click the "运行" button. Then the interface will show like that:
 
-- Test Label 2: Show the top 10 predicted labels sorted by the probability.
-- **Clean** Button: Clean the input image.
-- **Run** Button: Run the model with the input image.
-- **Translate** Button: (Optional) Translate the Chinese character label to English. I did not find a good Translation service for single character, so I left this park for future development or the readers to think about it.
+![APP SAMPLE IMAGE](figures/3.png)
 
-===================================
+The prediction ID means the ID in the model. If the accuracy shows 1.000, it means the program is very sure about the outcome. On the contrast, while it is 0.0000, it means it can't make sure at all. There are also several other possibilities beneath it, and the numbers after these characters are not their ID, but their number in the dataset. And you want to identify another OBC, you can click the "清空" botton, and write another OBC.
 
-## 4 Summary
-
+## 5 Summary
 This repository is inspired by the most recent DeepMind's work [Predicting the past with Ithaca](https://www.deepmind.com/blog/predicting-the-past-with-ithaca), I did not dig into the details of the work due to limited resources.
 
 I think the work is very interesting and I want to share my experience with the readers by trying a different language like Oracle Bone Scripts. It is also a good starter example for myself to revisit the pytorch deep learning packages and the qt-gui toolboxes.

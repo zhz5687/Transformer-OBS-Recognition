@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 
 2.png
+output
 # C extensions
 *.so
 checkpoints/*

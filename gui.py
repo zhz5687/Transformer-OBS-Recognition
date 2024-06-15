@@ -65,7 +65,7 @@ def resnet_block(input_channels, min_channels, num_channels, num_residuals, stri
 class TestData(Dataset):
     def __init__(self, transform=None):
         super(TestData, self).__init__()
-        with open('Validation_test.json', 'r', encoding='utf8') as f:
+        with open('gui_test.json', 'r', encoding='utf8') as f:
             images = json.load(f)
             labels = images
         self.images, self.labels = images, labels
