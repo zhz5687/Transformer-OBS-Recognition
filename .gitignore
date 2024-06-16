@@ -4,6 +4,7 @@ __pycache__/
 
 2.png
 output
+scan_handprint/OBC306
 # C extensions
 *.so
 checkpoints/*
