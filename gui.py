@@ -193,6 +193,7 @@ class MyForm(QMainWindow, Ui_MainWindow):
         self.ui.label_chinese.setText("Chinese 中文: ")
 
         self.model = ResNet()
+        # Please download your model
         checkpoint = torch.load('./checkpoint_ep0600.pth',  map_location=torch.device('cpu'))
         self.model.load_state_dict(checkpoint['state_dict'])
         self.model.eval()

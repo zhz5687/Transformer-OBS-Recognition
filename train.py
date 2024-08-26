@@ -35,6 +35,7 @@ parser.add_argument('--results-dir', default='output', type=str, metavar='PATH',
 parser.add_argument('--checkpoint_freq', type=int, default=10)
 parser.add_argument('--seed', type=int, default=42)
 args = parser.parse_args()  # running in command line
+
 if args.results_dir == '':
     args.results_dir = './cache-' + datetime.now().strftime("%Y-%m-%d-%H-%M-%S-moco")
 print(args)
@@ -43,6 +44,7 @@ seed=args.seed
 torch.manual_seed(seed)
 np.random.seed(seed)
 random.seed(seed)
+
 class RandomGaussianBlur(object):
     def __init__(self, p=0.5, min_kernel_size=3, max_kernel_size=15, min_sigma=0.1, max_sigma=1.0):
         self.p = p

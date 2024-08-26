@@ -259,5 +259,6 @@ else:
 # for epoch in range(epoch_start, args.epochs + 1):
 #     test_acc = test(net, test_loader, epoch, args)
 #     print(test_acc)
+
 test_acc = test(net, test_loader, epoch_start, args)
 print(test_acc)
