@@ -2,7 +2,8 @@
 # Decoding the Past: Innovative AI Models for Oracle Bone Character Identification
 
 ## Project Background
-![APP SAMPLE IMAGE](figures/OBS_Introduction.png)
+<img src="figures/OBS_Introduction.png" width="400" >
+
 
 **Oracle Bone Characters (OBC)**, one of the earliest forms of writing in China, are crucial for understanding ancient religious practices and daily lives. Inscribed on animal bones and shells, these artifacts, known as **Oracle Bone Scripts (OBS)** *(The abbreviations used for Oracle Bone Characters are OBC*, denoting individual characters, and OBS, representing the animal bones or shells inscribed with OBC.), offer pivotal historical and cultural insights. Yet, the identification of OBC poses substantial challenges due to factors such as  **Cracks**, **Weathering**, **Similarities** and the **Sheer Volume of Characters**, mainly caused by the long-timed burying. Our goal is to help archaeologists improve the efficiency of Oracle exploration.
 
@@ -20,7 +21,7 @@ As shown in previous figure, we propose an innovative AI based pipeline to solvi
 
 
 ## YOLO-X based OBS Detection Model
-For most of existing models that identify OBC, they are not such practical that researchers can’t use them to identify OBC on OBS once they dig out some OBS. With this aim, we build the detection part. Detection part can help us segment the OBS and produce some images that each image only includes one OBC, as shown in below figure. In our detection part, we firstly locate the bounding box of each OBC, and cut the character to produce a scanned version of this character. The format of the bounding box is [X1, Y1, X2, Y2], which means the coordinates of the top left and bottom right. Our detection part use YOLO-X framework.
+For most of existing models that identify OBC, they are not such practical that researchers can’t use them to identify OBC on OBS once they dig out some OBS. With this aim, we build the detection part. Detection part can help us segment the OBS and produce some images that each image only includes one OBC, as shown in below figure. In our detection part, we firstly locate the bounding box of each OBC, and cut the character to produce a scanned version of this character. The format of the bounding box is [X1, Y1, X2, Y2], which means the coordinates of the top left and bottom right. Our detection part use YOLO-X framework. **We achieve 47.3\% AP at a speed of 53.4 FPS** on RTX3090Ti, which is probably the most accurate OBS detection model in the industry.
 
 ### The steps to run YOLO-X-OBS
 ```bash
@@ -54,8 +55,10 @@ python GAN/obs_train.py --gpu 0 --gen_img_dir xxx--num_steps 100000 --batch_size
 
 
 ## OBC Vision-Transformer (OBC-VIT)
-We referenced two projects: one [(Deep-Learning-for-Oracle-Bone-Script-Recognition)](https://github.com/cuicaihao/Deep-Learning-for-Oracle-Bone-Script-Recognition/tree/master) used Qt to create the GUI but the model is not very accuracte, while the other one [(HUST-OBC)](https://github.com/Pengjie-W/HUST-OBC/tree/main?tab=readme-ov-file#validation) created a large OBC dataset. We promoted the interface of the first one, and optimized and amended the second one to use the Validation part. As a result, we got an intelligent and  accurate model. Once we write an OBC (Oracle Bones Character), it shows us what's the Chinese the OBC represents.
-![APP SAMPLE IMAGE](figures/Demo.gif)
+Vision Transformer (VIT) is a very popular architecture that performs well in classification tasks.. Transformer model as well as other attention models are widely used in NLP field, but since a image is not like a piece of sentence,it coudln't be applied to this model. The author of VIT came up with a new idea to make it possible to use Transformer in computer vision field. They separated the image to many parts and input to the Transformer model in a sequence so that the place of each small part are recorded.VIT successfully give the task of computer vision a new way other than CNN (ResNet is still a improvement of CNN), so we want to apply this to our model to test which side is more effective in recognizing OBC, therefore, we proposed the **OBC Vision-Transformer (OBC-VIT)** architecture.
+
+We referenced two projects: one [(Deep-Learning-for-Oracle-Bone-Script-Recognition)](https://github.com/cuicaihao/Deep-Learning-for-Oracle-Bone-Script-Recognition/tree/master) used Qt to create the GUI but the model is not very accuracte, while the other one [(HUST-OBC)](https://github.com/Pengjie-W/HUST-OBC/tree/main?tab=readme-ov-file#validation) created a large OBC dataset. We promoted the interface of the first one, and optimized and amended the second one to use the Validation part. As a result, we got an intelligent and accurate model (based on ResNet and VIT backbone). Once we write an OBC (Oracle Bones Character), it shows us what's the Chinese the OBC represents. Training on the HUST-OBS Dataset, we achieve an impressive accuracy of **97.2\%**
+![APP SAMPLE IMAGE](figures/Demo.gif).
 
 
 ### Step 1: Download the project
@@ -66,14 +69,13 @@ Download the project using git clone command.
 cd PROJECT_DIR
 git clone 
 https://github.com/zhz5687/Transformer-OBS-Recognition
-conda create --name obc python=3.8.19
+conda create --name obc-trans python=3.8.19
 pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
 pip install torch
 pip install PySide6
 pip install tensorboard
 pip install click -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
-There's another part of the program that't too big to put here, you can download [here](https://pan.baidu.com/s/1XlUjOg7S51yKuPkrKkOpKw?pwd=1234).
 
 ### Step 2: Create Environment 
 
@@ -81,7 +83,7 @@ We prepared the environment required for you. You can downoad it [here]( https:/
 and import it to Anaconda.
 When you run the program, you need to run it in this environment.
 ```bash
-conda activate Transformer
+conda activate obc-trans
 ```
 
 ### Step 3: Download the Dataset
@@ -90,10 +92,10 @@ We use the [HUST](https://arxiv.org/html/2401.15365v1) dataset, which can be dow
 
 
 ### Step 4: Train or Test your OBS model
-You can use [train.py](train.py) for fine-tuning or retraining. Once the model is downloaded, you can use [test.py](test.py) to validate the test set with an accuracy of 94.3%. [log.csv](log.csv) records the changes in training set accuracy and test set accuracy for each epoch. 
+You can use [train.py](train.py) for fine-tuning or retraining. Once the model is downloaded, you can use [test.py](test.py) to validate the test set with an accuracy of 97.2%. [log.csv](log.csv) records the changes in training set accuracy and test set accuracy for each epoch. 
 [Validation_label.json](Validation_label.json) stores the relationship between classification IDs and dataset category IDs. 
 
-If you don't want to train your own model, you can directly use our checkpoints (checkpoint_ep0600.pth). We have resnet version and VIT version.
+If you don't want to train your own model, you can directly use our checkpoints (checkpoint_ep0600.pth). We have resnet version and VIT version, which can be download [here](https://drive.google.com/file/d/1c7xjjN2s5ntkx-r_RK2c0QbqxbzCbuuY/view?usp=sharing).
 
 ### Step 5: Try to run the program
 
@@ -104,15 +106,13 @@ python gui.py
 
 ## 4 Introduction of the interface
 
-![APP SAMPLE IMAGE](figures/4.png)
-
 Once you load this interface, you can just write the OBC that you want to identify on the "输入" part, and click the "运行" button. Then the interface will show like that:
 
-![APP SAMPLE IMAGE](figures/3.png)
+<img src="figures/gui_demo.png" width="500" >
+
 
 The prediction ID means the ID in the model. If the accuracy shows 1.000, it means the program is very sure about the outcome. On the contrast, while it is 0.0000, it means it can't make sure at all. There are also several other possibilities beneath it, and the numbers after these characters are not their ID, but their number in the dataset. And you want to identify another OBC, you can click the "清空" botton, and write another OBC.
 
-
 ## License
 
-The MIT License (MIT), Copyright (c) 2024, Hanzhi Zhang
+The MIT License (MIT), Copyright (c) 2024, Hanzhi Zhang, Junfu Chen
